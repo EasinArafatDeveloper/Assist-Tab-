@@ -2557,32 +2557,37 @@ body::after {
 /* The small gear badge — bottom-right corner of every saved icon */
 .tool-action-gear {
   position: absolute;
-  bottom: -5px;
-  right: -5px;
+  bottom: -6px;
+  right: -6px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-  border: 2px solid rgba(255,255,255,0.2);
+  border: 2px solid #ffffff;
   color: #fff;
   font-size: 10px;
-  display: none;           /* hidden by default */
+  display: flex;              /* always flex — opacity controls visibility */
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 20;
-  box-shadow: 0 2px 8px rgba(99,102,241,0.4);
-  transition: transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.5);
+  opacity: 0;                 /* invisible by default */
+  pointer-events: none;
+  transform: scale(0.7);
+  transition: opacity 0.18s ease, transform 0.18s ease;
   line-height: 1;
 }
 
-/* Show gear when tool-btn is hovered */
+/* Reveal gear smoothly on icon hover */
 .tool-btn:hover .tool-action-gear {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
 }
 
 .tool-action-gear:hover {
-  transform: rotate(60deg) scale(1.15);
+  transform: scale(1.2) rotate(45deg);
 }
 
 /* The popover that appears on gear hover */

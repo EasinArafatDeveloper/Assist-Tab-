@@ -2446,7 +2446,8 @@ function getDomainFromUrl(url) {
 function renderQuickLinks(links) {
   if (!toolsContainer) return;
   toolsContainer.innerHTML = '';
-  const displayLinks = links.length > 0 ? links : DEFAULT_QUICK_LINKS;
+  const isSaved = links.length > 0;
+  const displayLinks = isSaved ? links : DEFAULT_QUICK_LINKS;
 
   displayLinks.forEach(link => {
     const encodedUrl = encodeURIComponent(link.url);
@@ -2465,19 +2466,19 @@ function renderQuickLinks(links) {
     img.alt = link.name;
     anchor.appendChild(img);
 
-    // Gear + popover — only for user-saved links
-    if (links.length > 0) {
-      // ── Gear badge (bottom-right corner) ──
-      const gear = document.createElement('button');
-      gear.className = 'tool-action-gear';
-      gear.innerHTML = '⚙';
-      gear.title = 'Manage';
-      gear.type = 'button';
+    // ── Gear badge (bottom-right corner) — always shown ──
+    const gear = document.createElement('button');
+    gear.className = 'tool-action-gear';
+    gear.innerHTML = '⚙';
+    gear.title = 'Manage';
+    gear.type = 'button';
 
-      // ── Popover (edit + delete) ──
-      const popover = document.createElement('div');
-      popover.className = 'tool-action-popover';
+    // ── Popover (edit + delete, or add) ──
+    const popover = document.createElement('div');
+    popover.className = 'tool-action-popover';
 
+    if (isSaved) {
+      // Edit option
       const editBtn = document.createElement('button');
       editBtn.className = 'tool-popover-btn edit-btn';
       editBtn.type = 'button';
@@ -2488,6 +2489,7 @@ function renderQuickLinks(links) {
         openEditLinkModal(link);
       });
 
+      // Delete option
       const delBtn = document.createElement('button');
       delBtn.className = 'tool-popover-btn delete-btn';
       delBtn.type = 'button';
@@ -2500,23 +2502,34 @@ function renderQuickLinks(links) {
 
       popover.appendChild(editBtn);
       popover.appendChild(delBtn);
-
-      // Toggle popover on gear click (more reliable than CSS hover chain)
-      gear.addEventListener('click', (e) => {
+    } else {
+      // Default link — offer to save it
+      const addBtn = document.createElement('button');
+      addBtn.className = 'tool-popover-btn edit-btn';
+      addBtn.type = 'button';
+      addBtn.innerHTML = '➕ Add to My Apps';
+      addBtn.addEventListener('click', async (e) => {
         e.preventDefault(); e.stopPropagation();
-        const isVisible = popover.style.display === 'flex';
-        // Close all open popovers first
-        document.querySelectorAll('.tool-action-popover').forEach(p => p.style.display = 'none');
-        popover.style.display = isVisible ? 'none' : 'flex';
+        popover.style.display = 'none';
+        const ok = await addQuickLink(link.name, link.url);
+        if (ok) Alert.success('Added!', `${link.name} added to your Workspace Apps.`);
       });
-
-      // Close popover when clicking outside
-      document.addEventListener('click', () => { popover.style.display = 'none'; }, { once: false });
-
-      anchor.appendChild(gear);
-      anchor.appendChild(popover);
+      popover.appendChild(addBtn);
     }
 
+    // Toggle popover on gear click
+    gear.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const isVisible = popover.style.display === 'flex';
+      document.querySelectorAll('.tool-action-popover').forEach(p => p.style.display = 'none');
+      popover.style.display = isVisible ? 'none' : 'flex';
+    });
+
+    // Close popover on outside click
+    document.addEventListener('click', () => { popover.style.display = 'none'; });
+
+    anchor.appendChild(gear);
+    anchor.appendChild(popover);
     toolsContainer.appendChild(anchor);
   });
 }
