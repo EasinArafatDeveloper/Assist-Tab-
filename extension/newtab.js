@@ -2449,8 +2449,6 @@ function renderQuickLinks(links) {
   const displayLinks = links.length > 0 ? links : DEFAULT_QUICK_LINKS;
 
   displayLinks.forEach(link => {
-    // Use gstatic faviconV2 with the full URL — this correctly resolves
-    // Google subdomains (mail.google.com → Gmail icon, not Google "G")
     const encodedUrl = encodeURIComponent(link.url);
     const faviconUrl = `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodedUrl}&size=64`;
 
@@ -2466,8 +2464,21 @@ function renderQuickLinks(links) {
     img.className = 'tool-icon-img';
     img.alt = link.name;
 
-    // Delete button (only for user-saved links, not defaults)
+    // Edit & Delete buttons — only for user-saved links
     if (links.length > 0) {
+      // ── Edit button (pencil) ──
+      const editBtn = document.createElement('button');
+      editBtn.className = 'tool-edit-btn';
+      editBtn.innerHTML = '✎';
+      editBtn.title = `Edit ${link.name}`;
+      editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openEditLinkModal(link);
+      });
+      anchor.appendChild(editBtn);
+
+      // ── Delete button (✕) ──
       const delBtn = document.createElement('button');
       delBtn.className = 'tool-delete-btn';
       delBtn.innerHTML = '✕';
@@ -2554,42 +2565,104 @@ async function deleteQuickLink(url) {
   }
 }
 
-// Open modal
+// ── Edit link modal helpers ──
+let editingLinkOriginalUrl = null;
+
+function openEditLinkModal(link) {
+  editingLinkOriginalUrl = link.url;
+  // Reuse the same modal — just change title and pre-fill values
+  document.querySelector('#add-link-modal .modal-header h3').textContent = 'Edit Workspace App';
+  document.querySelector('#add-link-modal button[type="submit"]').textContent = 'Save Changes';
+  linkNameInput.value = link.name;
+  linkUrlInput.value = link.url;
+  addLinkModal.classList.remove('hidden');
+  linkNameInput.focus();
+}
+
+function closeEditLinkModal() {
+  editingLinkOriginalUrl = null;
+  document.querySelector('#add-link-modal .modal-header h3').textContent = 'Add Workspace App';
+  document.querySelector('#add-link-modal button[type="submit"]').textContent = 'Add App';
+  addLinkModal.classList.add('hidden');
+  addLinkForm.reset();
+}
+
+async function updateQuickLink(originalUrl, newName, newUrl) {
+  if (!TOKEN) return false;
+  try {
+    // Delete old entry then add new one
+    const delRes = await fetch(`${BACKEND_URL}/api/links`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+      body: JSON.stringify({ url: originalUrl })
+    });
+    if (!delRes.ok) throw new Error('Delete failed');
+    const addRes = await fetch(`${BACKEND_URL}/api/links`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+      body: JSON.stringify({ name: newName, url: newUrl })
+    });
+    const data = await addRes.json();
+    if (addRes.ok && data.success) {
+      quickLinks = quickLinks.filter(l => l.url !== originalUrl);
+      quickLinks.push(data.data.link);
+      renderQuickLinks(quickLinks);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('Failed to update quick link:', err);
+    return false;
+  }
+}
+
+// Open modal (add mode)
 if (addLinkBtn) {
   addLinkBtn.addEventListener('click', () => {
+    editingLinkOriginalUrl = null;
+    document.querySelector('#add-link-modal .modal-header h3').textContent = 'Add Workspace App';
+    document.querySelector('#add-link-modal button[type="submit"]').textContent = 'Add App';
     addLinkModal.classList.remove('hidden');
+    linkNameInput.value = '';
+    linkUrlInput.value = '';
     linkNameInput.focus();
   });
 }
 
 // Close modal
 if (addLinkModalClose) {
-  addLinkModalClose.addEventListener('click', () => {
-    addLinkModal.classList.add('hidden');
-    addLinkForm.reset();
-  });
+  addLinkModalClose.addEventListener('click', () => closeEditLinkModal());
 }
 if (addLinkModal) {
   addLinkModal.addEventListener('click', (e) => {
-    if (e.target === addLinkModal) {
-      addLinkModal.classList.add('hidden');
-      addLinkForm.reset();
-    }
+    if (e.target === addLinkModal) closeEditLinkModal();
   });
 }
 
-// Form submit
+// Form submit — handles both Add and Edit
 if (addLinkForm) {
   addLinkForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = linkNameInput.value.trim();
     const url  = linkUrlInput.value.trim();
     if (!name || !url) return;
-    const ok = await addQuickLink(name, url);
-    if (ok) {
-      addLinkModal.classList.add('hidden');
-      addLinkForm.reset();
-      Alert.success('Added!', `${name} added to Workspace Apps.`);
+
+    if (editingLinkOriginalUrl) {
+      // Edit mode
+      const ok = await updateQuickLink(editingLinkOriginalUrl, name, url);
+      if (ok) {
+        closeEditLinkModal();
+        Alert.success('Updated!', `${name} has been updated.`);
+      } else {
+        Alert.error('Error', 'Failed to update link.');
+      }
+    } else {
+      // Add mode
+      const ok = await addQuickLink(name, url);
+      if (ok) {
+        closeEditLinkModal();
+        Alert.success('Added!', `${name} added to Workspace Apps.`);
+      }
     }
   });
 }
