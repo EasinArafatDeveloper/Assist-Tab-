@@ -307,6 +307,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Apply theme immediately
     const theme = result.theme || 'dark';
     document.body.setAttribute('data-theme', theme);
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    if (themeToggleBtn) {
+      themeToggleBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
 
     if (result.backend_url) {
       BACKEND_URL = result.backend_url;
@@ -340,6 +344,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Start Date & Time Live Clock
   updateDateTime();
   setInterval(updateDateTime, 1000);
+
+  // Theme Toggle click action
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.body.setAttribute('data-theme', newTheme);
+      themeToggleBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      
+      chrome.storage.local.set({ theme: newTheme }, () => {
+        Alert.success('Theme Changed', `Switched to ${newTheme === 'dark' ? 'Dark' : 'Light'} Mode.`);
+      });
+    });
+    
+    // Add hover scale micro-animation
+    themeToggleBtn.addEventListener('mouseenter', () => themeToggleBtn.style.transform = 'scale(1.15)');
+    themeToggleBtn.addEventListener('mouseleave', () => themeToggleBtn.style.transform = 'scale(1)');
+  }
 
   // Profile menu card trigger toggle click
   if (profileTriggerBtn) {
