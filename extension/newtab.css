@@ -1820,8 +1820,10 @@ body::after {
 .tools-container {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
+  overflow: visible; /* allow corner buttons to escape the container */
+  padding: 6px 0;
 }
 
 .tool-btn {
@@ -1832,11 +1834,12 @@ body::after {
   border: 1px solid var(--glass-border);
   width: 48px;
   height: 48px;
-  border-radius: 50% !important; /* Circular premium app dock icons */
+  border-radius: 50% !important;
   cursor: pointer;
   position: relative;
   transition: all var(--transition-fast);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+  overflow: visible; /* let corner gear escape the circle */
 }
 
 .tool-btn:hover {
@@ -2547,66 +2550,118 @@ body::after {
   transform: translateY(-50%) rotate(90deg) scale(1.1);
 }
 
-/* Tool action buttons (edit ✎ and delete ✕) shown on hover */
-.tool-btn {
-  position: relative;
-}
+/* =====================================================
+   WORKSPACE APPS — CORNER GEAR + EDIT/DELETE POPOVER
+   ===================================================== */
 
-/* ── Edit button (pencil) — top-left ── */
-.tool-edit-btn {
+/* The small gear badge — bottom-right corner of every saved icon */
+.tool-action-gear {
   position: absolute;
-  top: -4px;
-  left: -4px;
-  width: 18px;
-  height: 18px;
+  bottom: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: #6366f1;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  border: 2px solid rgba(255,255,255,0.2);
   color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  display: none;
+  font-size: 10px;
+  display: none;           /* hidden by default */
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+  transition: transform 0.2s ease;
   line-height: 1;
-  z-index: 10;
-  transition: transform 0.15s ease;
-}
-.tool-btn:hover .tool-edit-btn {
-  display: flex;
-}
-.tool-edit-btn:hover {
-  transform: scale(1.2);
-  background: #4f46e5;
 }
 
-/* ── Delete button (✕) — top-right ── */
-.tool-delete-btn {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #ef4444;
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  z-index: 10;
-  transition: transform 0.15s ease;
-}
-.tool-btn:hover .tool-delete-btn {
+/* Show gear when tool-btn is hovered */
+.tool-btn:hover .tool-action-gear {
   display: flex;
 }
-.tool-delete-btn:hover {
-  transform: scale(1.2);
+
+.tool-action-gear:hover {
+  transform: rotate(60deg) scale(1.15);
+}
+
+/* The popover that appears on gear hover */
+.tool-action-popover {
+  position: absolute;
+  bottom: 28px;
+  right: -8px;
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 90px;
+  z-index: 30;
+  white-space: nowrap;
+}
+
+/* Show popover when hovering the gear */
+.tool-action-gear:hover + .tool-action-popover,
+.tool-action-popover:hover {
+  display: flex;
+}
+
+/* Popover buttons */
+.tool-popover-btn {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.15s ease;
+  font-family: var(--font-family);
+}
+
+.tool-popover-btn:hover {
+  color: #fff;
+}
+
+.tool-popover-btn.edit-btn:hover {
+  background: rgba(99,102,241,0.2);
+  color: #818cf8;
+}
+
+.tool-popover-btn.delete-btn:hover {
+  background: rgba(239,68,68,0.15);
+  color: #f87171;
+}
+
+/* Light theme overrides */
+[data-theme="light"] .tool-action-popover {
+  background: rgba(255,255,255,0.97);
+  border-color: rgba(99,102,241,0.2);
+  box-shadow: 0 8px 24px rgba(30,41,59,0.15);
+}
+
+[data-theme="light"] .tool-popover-btn {
+  color: #475569;
+}
+
+[data-theme="light"] .tool-popover-btn.edit-btn:hover {
+  background: rgba(99,102,241,0.08);
+  color: #6366f1;
+}
+
+[data-theme="light"] .tool-popover-btn.delete-btn:hover {
+  background: rgba(239,68,68,0.08);
+  color: #ef4444;
 }
 
 /* ============================================

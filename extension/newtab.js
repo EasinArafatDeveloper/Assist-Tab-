@@ -2463,35 +2463,60 @@ function renderQuickLinks(links) {
     img.src = faviconUrl;
     img.className = 'tool-icon-img';
     img.alt = link.name;
+    anchor.appendChild(img);
 
-    // Edit & Delete buttons — only for user-saved links
+    // Gear + popover — only for user-saved links
     if (links.length > 0) {
-      // ── Edit button (pencil) ──
+      // ── Gear badge (bottom-right corner) ──
+      const gear = document.createElement('button');
+      gear.className = 'tool-action-gear';
+      gear.innerHTML = '⚙';
+      gear.title = 'Manage';
+      gear.type = 'button';
+
+      // ── Popover (edit + delete) ──
+      const popover = document.createElement('div');
+      popover.className = 'tool-action-popover';
+
       const editBtn = document.createElement('button');
-      editBtn.className = 'tool-edit-btn';
-      editBtn.innerHTML = '✎';
-      editBtn.title = `Edit ${link.name}`;
+      editBtn.className = 'tool-popover-btn edit-btn';
+      editBtn.type = 'button';
+      editBtn.innerHTML = '✏️ Edit';
       editBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
+        popover.style.display = 'none';
         openEditLinkModal(link);
       });
-      anchor.appendChild(editBtn);
 
-      // ── Delete button (✕) ──
       const delBtn = document.createElement('button');
-      delBtn.className = 'tool-delete-btn';
-      delBtn.innerHTML = '✕';
-      delBtn.title = `Remove ${link.name}`;
+      delBtn.className = 'tool-popover-btn delete-btn';
+      delBtn.type = 'button';
+      delBtn.innerHTML = '🗑️ Delete';
       delBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
+        popover.style.display = 'none';
         await deleteQuickLink(link.url);
       });
-      anchor.appendChild(delBtn);
+
+      popover.appendChild(editBtn);
+      popover.appendChild(delBtn);
+
+      // Toggle popover on gear click (more reliable than CSS hover chain)
+      gear.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const isVisible = popover.style.display === 'flex';
+        // Close all open popovers first
+        document.querySelectorAll('.tool-action-popover').forEach(p => p.style.display = 'none');
+        popover.style.display = isVisible ? 'none' : 'flex';
+      });
+
+      // Close popover when clicking outside
+      document.addEventListener('click', () => { popover.style.display = 'none'; }, { once: false });
+
+      anchor.appendChild(gear);
+      anchor.appendChild(popover);
     }
 
-    anchor.appendChild(img);
     toolsContainer.appendChild(anchor);
   });
 }
