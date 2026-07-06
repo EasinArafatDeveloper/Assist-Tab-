@@ -2150,6 +2150,30 @@ body::after {
    AI ASSISTANT — PREMIUM REDESIGN
    ===================================================== */
 
+/* ── Robot icon image inside toggle button ── */
+.ai-robot-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ai-assistant-toggle:hover .ai-robot-img {
+  transform: scale(1.1) rotate(-8deg);
+}
+
+/* ── Robot icon inside sidebar header ── */
+.ai-robot-header-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+}
+
 /* ── Floating Toggle Button ── */
 .ai-assistant-toggle {
   position: fixed;
