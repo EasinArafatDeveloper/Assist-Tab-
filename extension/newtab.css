@@ -3604,3 +3604,79 @@ body::after {
   border-color: rgba(245, 158, 11, 0.25) !important;
 }
 
+/* ============================================================
+   LIGHT THEME — SEARCH BOX BEAUTIFUL GRADIENT
+   ============================================================ */
+
+/* Override the spinning rainbow border to a softer pastel palette in light mode */
+[data-theme="light"] .chat-input-wrapper-glow {
+  background: linear-gradient(
+    135deg,
+    #a5b4fc 0%,
+    #818cf8 20%,
+    #7dd3fc 45%,
+    #86efac 65%,
+    #f9a8d4 85%,
+    #a5b4fc 100%
+  );
+  animation: lightSearchGlow 6s ease-in-out infinite;
+}
+
+/* Soft pastel halo behind the border in light mode */
+[data-theme="light"] .chat-input-wrapper-glow::before {
+  background: linear-gradient(
+    135deg,
+    #a5b4fc,
+    #7dd3fc,
+    #86efac,
+    #f9a8d4,
+    #a5b4fc
+  );
+  opacity: 0.35;
+  filter: blur(18px);
+  animation: lightSearchGlow 6s ease-in-out infinite;
+}
+
+/* The inner input box: a gorgeous frosted glass gradient */
+[data-theme="light"] .chat-input-wrapper {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 246, 255, 0.96) 0%,
+    rgba(245, 240, 255, 0.95) 40%,
+    rgba(255, 242, 252, 0.96) 100%
+  ) !important;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.9), 0 2px 12px rgba(129, 140, 248, 0.1);
+}
+
+/* On focus: make the inner box a touch more saturated/vivid */
+[data-theme="light"] .chat-input-wrapper:focus-within {
+  background: linear-gradient(
+    135deg,
+    rgba(224, 236, 255, 0.98) 0%,
+    rgba(237, 228, 255, 0.97) 40%,
+    rgba(255, 228, 248, 0.98) 100%
+  ) !important;
+}
+
+/* More intense halo on focus in light mode */
+[data-theme="light"] .chat-input-wrapper-glow:has(.chat-input-wrapper:focus-within)::before {
+  opacity: 0.65;
+  filter: blur(24px);
+}
+
+/* Keep input text dark and readable */
+[data-theme="light"] .chat-input-wrapper input {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .chat-input-wrapper input::placeholder {
+  color: #64748b !important;
+}
+
+/* Subtle gradient animation for the light search border */
+@keyframes lightSearchGlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
