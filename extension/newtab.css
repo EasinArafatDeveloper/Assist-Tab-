@@ -4107,3 +4107,132 @@ body::after {
   100% { background-position: 0% 50%; }
 }
 
+
+/* ================================================================
+   GLOBAL LIGHT THEME — INPUT / SELECT / TEXTAREA FIX
+   All form elements get clean white background + dark readable text
+   ================================================================ */
+
+/* ── All inputs, selects, textareas globally ── */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  background: #ffffff !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+  color: #0f172a !important;
+}
+
+/* ── Select dropdown options ── */
+[data-theme="light"] select option {
+  background: #ffffff;
+  color: #1e293b;
+}
+
+/* ── Input group labels ── */
+[data-theme="light"] .input-group label,
+[data-theme="light"] label {
+  color: #475569 !important;
+}
+
+/* ── Auth form card inputs ── */
+[data-theme="light"] .auth-card input,
+[data-theme="light"] .auth-card select {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #0f172a !important;
+}
+
+/* ── Modal form inputs ── */
+[data-theme="light"] .modal-card input,
+[data-theme="light"] .modal-card select,
+[data-theme="light"] .modal-card textarea {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .modal-card input::placeholder,
+[data-theme="light"] .modal-card textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ── Card & slide form inputs ── */
+[data-theme="light"] .card input,
+[data-theme="light"] .card select,
+[data-theme="light"] .card textarea,
+[data-theme="light"] .slide-form input,
+[data-theme="light"] .slide-form select,
+[data-theme="light"] .slide-form textarea {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .card input::placeholder,
+[data-theme="light"] .card textarea::placeholder,
+[data-theme="light"] .slide-form input::placeholder,
+[data-theme="light"] .slide-form textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ── Quick Note textarea ── */
+[data-theme="light"] #quick-note-textarea {
+  background: rgba(248, 250, 252, 0.9) !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] #quick-note-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ── Engine selector / Dropdown buttons text ── */
+[data-theme="light"] .engine-select-btn,
+[data-theme="light"] .engine-option-btn {
+  color: #1e293b !important;
+}
+
+/* ── Primary button text fix (always white) ── */
+[data-theme="light"] .primary-btn {
+  color: #ffffff !important;
+}
+
+/* ── Tabs / Tab buttons ── */
+[data-theme="light"] .tab-btn {
+  color: #475569 !important;
+}
+[data-theme="light"] .tab-btn.active {
+  color: #ffffff !important;
+}
+
+/* ── Routine add form inputs (slide panel) ── */
+[data-theme="light"] .slide-panel input,
+[data-theme="light"] .slide-panel select,
+[data-theme="light"] .slide-panel textarea {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #1e293b !important;
+}
+
+/* ── Settings page inputs ── */
+[data-theme="light"] .settings-input,
+[data-theme="light"] .form-input {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #1e293b !important;
+}
