@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "AssistTab - Personal Assistant Dashboard",
+  "version": "1.0",
+  "description": "Custom dashboard with routine checklist, class schedule timetable, and personalized AI chatbot assistant.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications",
+    "bookmarks",
+    "tabs",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "identity"
+  ],
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "<all_urls>",
+    "http://localhost:3000/*",
+    "https://*.vercel.app/*",
+    "https://suggestqueries.google.com/*",
+    "https://www.google.com/*",
+    "https://images.google.com/*",
+    "https://t2.gstatic.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/imghp*",
+        "https://images.google.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AssistTab - Personal Assistant</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="newtab.css">
+  <link rel="stylesheet" href="focus_mode_styles_temp.css">
+</head>
+<body>
+  <!-- Dynamic Background Animated Glow Blobs -->
+  <div class="ambient-glow blob-1"></div>
+  <div class="ambient-glow blob-2"></div>
+
+  <!-- Container for glassmorphism styling -->
+  <div class="app-container">
+    
+    <!-- 1. AUTH SCREEN (Shown when not logged in) -->
+    <div id="auth-screen" class="hidden" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1 class="logo-text">AssistTab</h1>
+          <p class="subtitle">Your productivity dashboard and AI companion</p>
+        </div>
+        
+        <div class="tabs">
+          <button id="tab-login" class="tab-btn active">Login</button>
+          <button id="tab-register" class="tab-btn">Register</button>
+        </div>
+
+        <form id="auth-form" class="auth-form">
+          <div class="input-group">
+            <label for="auth-email">Email Address</label>
+            <input type="email" id="auth-email" required placeholder="name@example.com">
+          </div>
+          <div class="input-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" required placeholder="••••••••">
+          </div>
+          <button type="submit" id="auth-submit-btn" class="primary-btn">Log In</button>
+        </form>
+        
+        <div class="backend-settings">
+          <details>
+            <summary>Connection Settings</summary>
+            <div class="input-group" style="margin-top: 10px;">
+              <label for="backend-url-config">Backend API URL</label>
+              <input type="url" id="backend-url-config" value="http://localhost:3000">
+              <small>Set this to your deployed Vercel domain later.</small>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. MAIN DASHBOARD SCREEN (Shown when logged in) -->
+    <div id="dashboard-screen" class="dashboard-container hidden">
+      
+      <!-- CHROME BOOKMARKS BAR (NATIVE LOOK) -->
+      <div class="bookmarks-bar-native">
+        <div class="bookmarks-left">
+          <svg class="chrome-apps-icon" viewBox="0 0 16 16" width="16" height="16">
+            <path fill="currentColor" d="M2 2h3v3H2V2zm5 0h3v3H7V2zm5 0h3v3h-3V2zM2 7h3v3H2V7zm5 0h3v3H7V7zm5 0h3v3h-3V7zM2 12h3v3H2v-3zm5 0h3v3H7v-3zm5 0h3v3h-3v-3z"/>
+          </svg>
+        </div>
+        <div id="bookmarks-container" class="bookmarks-container">
+          <div class="loading-placeholder" style="padding: 0; font-size: 11px;">Loading bookmarks...</div>
+        </div>
+        <div class="bookmarks-right">
+          <a href="chrome://bookmarks" target="_blank" class="all-bookmarks-btn">
+            <svg class="folder-icon" viewBox="0 0 16 16" width="16" height="16" fill="rgba(255,255,255,0.6)" style="margin-right: 4px; vertical-align: middle;">
+              <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5V3h6.5A1.5 1.5 0 0 1 15 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5v-11zM2.5 2a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5H6a1.5 1.5 0 0 1-1.5-1.5v-.5h-2z"/>
+            </svg>
+            <span style="vertical-align: middle;">All Bookmarks</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- HEADER PANEL -->
+      <header class="dashboard-header" style="margin: 0 32px; padding: 24px 0 0 0;">
+        <div class="header-left">
+          <h1 class="welcome-msg" id="welcome-message">Hello!</h1>
+          <p class="current-date" id="live-date">Friday, July 3, 2026</p>
+        </div>
+        
+        <!-- CENTER NAVIGATION SEGMENT TOGGLE -->
+        <div class="header-center">
+          <div class="view-toggle-bar">
+            <button type="button" id="view-dashboard-btn" class="view-btn active">Dashboard</button>
+            <button type="button" id="view-calendar-btn" class="view-btn">Calendar</button>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <span class="live-clock" id="live-clock">18:00</span>
+          <a href="settings.html" id="settings-toggle-btn" class="icon-btn" title="Settings" style="text-decoration: none; line-height: 1; margin-right: 12px;">⚙️</a>
+          <button type="button" id="profile-trigger-btn" class="profile-avatar-btn" title="Account Details">
+            <img id="profile-avatar-img" class="avatar-img hidden" src="" alt="Profile Photo">
+            <span id="profile-avatar-initial">U</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- DASHBOARD MAIN CONTENT WRAPPER -->
+      <div class="dashboard-content-wrapper" id="main-dashboard-view">
+
+        
+        <div class="dashboard-grid">
+
+      <!-- QUICK ACCESS TOOLS -->
+      <div class="quick-tools-bar glass stagger-1">
+        <div class="quick-tools-title">🛠️ Workspace Apps</div>
+        <div id="tools-container" class="tools-container">
+          <!-- Loaded dynamically by JS -->
+        </div>
+        <button id="add-link-btn" class="add-link-btn" title="Add custom app link">＋</button>
+      </div>
+
+      <!-- ADD LINK MODAL -->
+      <div id="add-link-modal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width: 380px;">
+          <div class="modal-header">
+            <h3>Add Workspace App</h3>
+            <button id="add-link-modal-close" class="icon-btn">✕</button>
+          </div>
+          <form id="add-link-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+            <div class="input-group">
+              <label for="link-name-input">App Name</label>
+              <input type="text" id="link-name-input" placeholder="e.g. GitHub" required>
+            </div>
+            <div class="input-group">
+              <label for="link-url-input">URL</label>
+              <input type="url" id="link-url-input" placeholder="https://github.com" required>
+            </div>
+            <button type="submit" class="primary-btn">Add App</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SEARCH BAR CONTAINER (MIDDLE FULL WIDTH) -->
+      <div class="search-bar-container stagger-2" style="position: relative;">
+        <form id="chat-form" class="chat-form">
+          <div class="chat-input-wrapper-glow">
+          <div class="chat-input-wrapper">
+            <!-- Engine Selector Dropdown -->
+            <div class="engine-selector">
+              <button type="button" id="engine-select-btn" class="engine-select-btn" title="Select Search Engine / AI Model">
+                <img id="selected-engine-icon" src="https://www.google.com/s2/favicons?sz=32&domain=google.com" alt="Google">
+                <span id="selected-engine-name">Google</span>
+                <span class="dropdown-arrow">▼</span>
+              </button>
+              
+              <!-- Engine Dropdown List -->
+              <div id="engine-dropdown-list" class="engine-dropdown-list hidden">
+                <button type="button" class="engine-option-btn" data-engine="deepseek" data-name="DeepSeek" data-icon="https://www.google.com/s2/favicons?sz=32&domain=deepseek.com" data-placeholder="Ask DeepSeek Assistant...">
+                  <img src="https://www.google.com/s2/favicons?sz=32&domain=deepseek.com" alt="DeepSeek">
+                  <span>DeepSeek Chat</span>
+                </button>
+                <button type="button" class="engine-option-btn active" data-engine="google" data-name="Google" data-icon="https://www.google.com/s2/favicons?sz=32&domain=google.com" data-placeholder="Search on Google...">
+                  <img src="https://www.google.com/s2/favicons?sz=32&domain=google.com" alt="Google">
+                  <span>Google Search</span>
+                </button>
+                <button type="button" class="engine-option-btn" data-engine="chatgpt" data-name="ChatGPT" data-icon="https://www.google.com/s2/favicons?sz=32&domain=openai.com" data-placeholder="Ask ChatGPT...">
+                  <img src="https://www.google.com/s2/favicons?sz=32&domain=openai.com" alt="ChatGPT">
+                  <span>ChatGPT</span>
+                </button>
+                <button type="button" class="engine-option-btn" data-engine="gemini" data-name="Gemini" data-icon="https://www.google.com/s2/favicons?sz=32&domain=gemini.google.com" data-placeholder="Ask Gemini...">
+                  <img src="https://www.google.com/s2/favicons?sz=32&domain=gemini.google.com" alt="Gemini">
+                  <span>Gemini</span>
+                </button>
+                <button type="button" class="engine-option-btn" data-engine="claude" data-name="Claude" data-icon="https://www.google.com/s2/favicons?sz=32&domain=claude.ai" data-placeholder="Ask Claude...">
+                  <img src="https://www.google.com/s2/favicons?sz=32&domain=claude.ai" alt="Claude">
+                  <span>Claude AI</span>
+                </button>
+                <button type="button" class="engine-option-btn" data-engine="perplexity" data-name="Perplexity" data-icon="https://www.google.com/s2/favicons?sz=32&domain=perplexity.ai" data-placeholder="Ask Perplexity...">
+                  <img src="https://www.google.com/s2/favicons?sz=32&domain=perplexity.ai" alt="Perplexity">
+                  <span>Perplexity AI</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="engine-divider"></div>
+            
+            <input type="text" id="chat-input" placeholder="Search on Google..." required autocomplete="off">
+            <button type="button" id="chat-mic-btn" class="mic-btn" title="Voice Typing">🎤</button>
+            <button type="button" id="chat-lens-btn" class="lens-btn" title="Search by Image (Google Lens)">
+              <svg class="lens-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.8; transition: opacity 0.2s;">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
+            <button type="submit" class="send-btn"><span>➔</span></button>
+          </div>
+          </div><!-- /.chat-input-wrapper-glow -->
+        </form>
+        <!-- Google Autocomplete Suggestions Dropdown -->
+        <div id="search-suggestions" class="search-suggestions-list hidden"></div>
+      </div>
+
+      <!-- COLUMN 1: ROUTINE MANAGER -->
+      <section class="card glass routine-card stagger-3">
+        <div class="card-header">
+          <h2>Daily Routine</h2>
+          <div style="display: flex; gap: 8px;">
+            <button id="import-routine-toggle" class="circle-btn" title="Import Routines">📥</button>
+            <button id="add-routine-toggle" class="circle-btn" title="Add Routine">+</button>
+          </div>
+        </div>
+        
+        <!-- Import Routine Form (collapsible) -->
+        <div id="import-routine-container" class="slide-form hidden">
+          <div class="import-options">
+            <div class="tabs" style="margin-bottom: 16px;">
+              <button type="button" id="import-tab-file" class="tab-btn active" style="padding: 6px;">Upload File</button>
+              <button type="button" id="import-tab-sheet" class="tab-btn" style="padding: 6px;">Google Sheet</button>
+            </div>
+            
+            <!-- File upload pane -->
+            <div id="import-pane-file" class="import-pane">
+              <label for="routine-file-input" class="file-dropzone" id="file-dropzone">
+                <span style="font-size: 14px; font-weight: 600; display: block; margin-bottom: 4px;">📁 Click to select file</span>
+                <span style="font-size: 11px; color: var(--text-secondary); display: block;">TXT, CSV, XLSX, XLS, PDF, PNG, JPG, JPEG</span>
+                <input type="file" id="routine-file-input" accept=".txt,.csv,.xlsx,.xls,.pdf,image/png,image/jpeg,image/jpg" style="display: none;">
+              </label>
+              <div id="file-upload-status" style="font-size: 12px; color: var(--accent); margin-top: 8px; text-align: center;" class="hidden"></div>
+            </div>
+            
+            <!-- Google Sheet link pane -->
+            <div id="import-pane-sheet" class="import-pane hidden">
+              <div class="input-group">
+                <label for="sheet-url-input" style="font-size: 11px;">Google Sheet Public URL</label>
+                <input type="url" id="sheet-url-input" placeholder="https://docs.google.com/spreadsheets/d/...">
+                <small style="font-size: 10px; color: var(--text-muted); margin-top: 4px; display: block;">Sheet sharing must be set to 'Anyone with the link can view'</small>
+              </div>
+            </div>
+            
+            <button type="button" id="process-import-btn" class="primary-btn" style="margin-top: 16px; width: 100%; padding: 10px;">Analyze & Import Tasks</button>
+          </div>
+        </div>
+
+        <!-- Add Routine Form (collapsible) -->
+        <div id="routine-form-container" class="slide-form hidden">
+          <form id="routine-form">
+            <div style="position: relative; display: flex; align-items: center; width: 100%;">
+              <input type="text" id="routine-title" placeholder="Routine Title (e.g. Read a book)" required style="flex: 1; padding-right: 40px; width: 100%;">
+              <button type="button" id="routine-mic-btn" class="mic-btn" title="Voice Typing" style="position: absolute; right: 10px; background: transparent; border: none; cursor: pointer; font-size: 16px; outline: none; transition: var(--transition-fast);">🎤</button>
+            </div>
+            <textarea id="routine-desc" placeholder="Description (optional)"></textarea>
+            <div class="form-row">
+              <input type="time" id="routine-time" title="Time">
+              <select id="routine-priority" title="Priority" style="flex: 1; min-width: 100px;">
+                <option value="normal" selected>Normal</option>
+                <option value="important">Important (2nd)</option>
+                <option value="emergency">Emergency (1st)</option>
+              </select>
+              <button type="submit" class="submit-inline">Add</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="list-container" id="routine-list">
+          <!-- Dynamically filled with routine items -->
+          <div class="loading-placeholder">Loading routine...</div>
+        </div>
+      </section>
+
+      <!-- COLUMN 2: WORK PRIORITY -->
+      <section class="card glass priority-card stagger-3">
+        <div class="card-header">
+          <h2>Work Priority</h2>
+        </div>
+        <div class="list-container" id="priority-list">
+          <!-- Dynamically filled with priority groups -->
+          <div class="loading-placeholder">Loading priorities...</div>
+        </div>
+      </section>
+
+      <!-- COLUMN 3: PRODUCTIVITY TRACKER & QUICK NOTE -->
+      <div class="stagger-4" style="display: flex; flex-direction: column; gap: 24px; height: 100%;">
+        
+        <!-- PRODUCTIVITY TRACKER -->
+        <section class="card glass tracker-card" style="margin: 0; flex: 1.1; min-height: 0;">
+          <div class="card-header">
+            <h2>📊 Productivity Tracker</h2>
+            <span class="tracker-date-label" id="tracker-date-label"></span>
+          </div>
+
+          <!-- Donut Chart + Summary Row -->
+          <div class="tracker-chart-row">
+            <!-- Donut Chart Canvas -->
+            <div class="tracker-donut-wrap">
+              <canvas id="tracker-donut-canvas" width="110" height="110"></canvas>
+              <div class="tracker-donut-center">
+                <span id="tracker-donut-pct">–</span>
+                <small>Focus</small>
+              </div>
+            </div>
+
+            <!-- Summary Stat Cards -->
+            <div class="tracker-stats-col">
+              <div class="tracker-stat-chip productive-chip">
+                <span class="tsc-dot productive-dot"></span>
+                <div>
+                  <div class="tsc-label">Productive</div>
+                  <div class="tsc-value" id="tracker-stat-productive">0m</div>
+                </div>
+              </div>
+              <div class="tracker-stat-chip distraction-chip">
+                <span class="tsc-dot distraction-dot"></span>
+                <div>
+                  <div class="tsc-label">Distraction</div>
+                  <div class="tsc-value" id="tracker-stat-distraction">0m</div>
+                </div>
+              </div>
+              <div class="tracker-stat-chip total-chip">
+                <span class="tsc-dot total-dot"></span>
+                <div>
+                  <div class="tsc-label">Total</div>
+                  <div class="tsc-value" id="tracker-stat-total">0m</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Site List -->
+          <div class="tracker-list-label">Top Sites Today</div>
+          <div class="list-container" id="tracker-list" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; min-height: 0;">
+            <div class="loading-placeholder">No tracking data recorded yet.</div>
+          </div>
+        </section>
+
+        <!-- QUICK NOTE -->
+        <section class="card glass quick-note-card" style="margin: 0; flex: 0.9; min-height: 0; display: flex; flex-direction: column;">
+          <div class="card-header">
+            <h2>📝 Quick Note</h2>
+            <button id="clear-note-btn" class="circle-btn" title="Clear Note" style="background: transparent; border: none; font-size: 14px; cursor: pointer; transition: transform 0.2s;">🧹</button>
+          </div>
+          <div class="note-container" style="flex: 1; display: flex; flex-direction: column; margin-top: 12px; min-height: 0;">
+            <textarea id="quick-note-textarea" placeholder="Type your quick notes here... Autosaves instantly ✨" style="flex: 1; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; color: var(--text-primary); outline: none; font-size: 13.5px; resize: none; font-family: inherit; line-height: 1.5; transition: border-color 0.2s, box-shadow 0.2s;"></textarea>
+          </div>
+        </section>
+
+      </div>
+
+
+      </div> <!-- End of .dashboard-grid -->
+    </div> <!-- End of .dashboard-content-wrapper -->
+
+    <!-- CALENDAR VIEW WRAPPER -->
+    <div id="calendar-view-wrapper" class="dashboard-content-wrapper hidden">
+      <div class="calendar-card glass stagger-1">
+        <div class="calendar-header-row">
+          <div class="calendar-month-nav">
+            <button type="button" id="cal-prev-month-btn" class="cal-nav-btn">◀</button>
+            <h2 id="cal-month-title">July 2026</h2>
+            <button type="button" id="cal-next-month-btn" class="cal-nav-btn">▶</button>
+          </div>
+          <div class="calendar-actions-header">
+            <button type="button" id="cal-today-btn" class="cal-today-btn">Today</button>
+          </div>
+        </div>
+        
+        <div class="calendar-grid-container">
+          <!-- Day labels: Sun, Mon, Tue, etc. -->
+          <div class="calendar-weekdays">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <!-- Days grid -->
+          <div id="calendar-days-grid" class="calendar-days-grid">
+            <!-- Rendered dynamically by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOOGLE-STYLE PROFILE DROPDOWN CARD -->
+    <div id="profile-menu-card" class="profile-menu-card hidden">
+      <div class="profile-menu-header">
+        <span id="profile-menu-email">loading...</span>
+        <button type="button" id="profile-menu-close-btn" class="profile-close-btn" title="Close">&times;</button>
+      </div>
+      <div class="profile-menu-body">
+        <div class="profile-menu-avatar-large">
+          <img id="profile-menu-avatar-img-lg" class="avatar-img-lg hidden" src="" alt="Profile Photo">
+          <div class="avatar-circle-lg" id="profile-menu-avatar-initial-lg">U</div>
+        </div>
+        <h3 id="profile-menu-greeting">Hi!</h3>
+        <a href="settings.html" class="manage-account-btn">Manage AssistTab Settings</a>
+      </div>
+      <div class="profile-menu-actions-row">
+        <a href="settings.html?tab=focus" class="profile-action-btn">
+          <span class="btn-icon">🎯</span>
+          <span class="btn-text">Focus Blocker</span>
+        </a>
+        <button type="button" id="profile-logout-btn" class="profile-action-btn danger">
+          <span class="btn-icon">➔</span>
+          <span class="btn-text">Sign Out</span>
+        </button>
+      </div>
+      <div class="profile-menu-stats">
+        <div class="stats-icon">☁️</div>
+        <div class="stats-text">
+          <span>Cloud Sync Active</span>
+          <small id="profile-menu-sync-desc">Connected to Next.js Backend</small>
+        </div>
+      </div>
+      <div class="profile-menu-legal">
+        <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+      </div>
+    </div>
+
+
+
+      <!-- EDIT ROUTINE MODAL -->
+      <div id="edit-routine-panel" class="settings-modal hidden">
+        <div class="settings-content glass">
+          <div class="settings-header">
+            <h3>Edit Routine</h3>
+            <button id="edit-routine-close-btn" class="close-btn">&times;</button>
+          </div>
+          <div class="settings-body">
+            <form id="edit-routine-form" style="display: flex; flex-direction: column; gap: 16px;">
+              <input type="hidden" id="edit-routine-id">
+              <div class="input-group">
+                <label for="edit-routine-title">Routine Title</label>
+                <input type="text" id="edit-routine-title" required placeholder="e.g. Read a book">
+              </div>
+              <div class="input-group">
+                <label for="edit-routine-desc">Description</label>
+                <textarea id="edit-routine-desc" placeholder="Description (optional)" style="min-height: 80px;"></textarea>
+              </div>
+              <div class="form-row">
+                <div class="input-group" style="flex: 1;">
+                  <label for="edit-routine-time">Time</label>
+                  <input type="time" id="edit-routine-time">
+                </div>
+                <div class="input-group" style="flex: 1;">
+                  <label for="edit-routine-priority">Priority</label>
+                  <select id="edit-routine-priority">
+                    <option value="normal">Normal</option>
+                    <option value="important">Important (2nd)</option>
+                    <option value="emergency">Emergency (1st)</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="primary-btn" style="margin-top: 10px;">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+      <!-- FLOATING AI ASSISTANT TOGGLE BUTTON -->
+      <button id="ai-assistant-toggle" class="ai-assistant-toggle" title="Open AI Assistant">
+        <span class="ai-icon">✨</span>
+      </button>
+
+      <!-- FLOATING AI ASSISTANT SIDEBAR -->
+      <div id="ai-assistant-sidebar" class="ai-assistant-sidebar closed">
+        <div class="sidebar-header">
+          <div class="sidebar-title-info">
+            <span class="sidebar-title-icon">✨</span>
+            <div>
+              <h3>AI Assistant Agent</h3>
+              <span class="status-indicator online" id="ai-sidebar-status">Agent Active</span>
+            </div>
+          </div>
+          <button id="ai-sidebar-close-btn" class="sidebar-close-btn">&times;</button>
+        </div>
+        
+        <div class="sidebar-messages" id="ai-sidebar-messages">
+          <div class="message assistant">
+            <div class="msg-bubble">
+              Hello! I'm your Personal Assistant. I can track your website usage, schedule routine tasks, and help manage your day. 
+              <br><br>
+              Try saying: <strong>"Add task Study Chemistry at 5:00 PM with High priority"</strong>
+            </div>
+          </div>
+        </div>
+        
+        <div id="ai-sidebar-attachment-preview" class="sidebar-attachment-preview hidden"></div>
+        
+        <form id="ai-sidebar-form" class="sidebar-form">
+          <div class="sidebar-input-wrapper">
+            <button type="button" id="ai-sidebar-attach-btn" class="attach-btn" title="Attach Image or File" style="position: absolute; left: 12px; background: transparent; border: none; cursor: pointer; font-size: 16px; outline: none; transition: var(--transition-fast);">📎</button>
+            <input type="file" id="ai-sidebar-file-input" style="display: none;" accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain" multiple>
+            <input type="text" id="ai-sidebar-input" placeholder="Ask your assistant..." required autocomplete="off" style="padding-left: 36px; padding-right: 45px;">
+            <button type="button" id="ai-sidebar-mic-btn" class="mic-btn" title="Voice Typing" style="position: absolute; right: 15px; background: transparent; border: none; cursor: pointer; font-size: 16px; outline: none; transition: var(--transition-fast);">🎤</button>
+          </div>
+          <button type="submit" class="send-btn">➔</button>
+        </form>
+      </div>
+  <!-- BLOCKED PAGE OVERLAY (shown via JS when ?blocked=1 is in URL) -->
+  <div id="focus-blocked-overlay" class="focus-blocked-overlay hidden">
+    <div class="focus-blocked-card">
+      <div class="focus-blocked-icon">🔒</div>
+      <h1 class="focus-blocked-title">Site Blocked</h1>
+      <p class="focus-blocked-site" id="focus-blocked-site-name"></p>
+      <p class="focus-blocked-msg">
+        You blocked this site during your <strong>Focus Session</strong>.<br>
+        Stay focused — you can do it! 💪
+      </p>
+      <div class="focus-blocked-timer" id="focus-blocked-timer-wrap">
+        <span>Session ends at</span>
+        <strong id="focus-blocked-session-end">–</strong>
+      </div>
+      <button class="focus-blocked-back-btn" onclick="history.back()">← Go Back</button>
+      <button class="focus-blocked-newtab-btn" onclick="document.getElementById('focus-blocked-overlay').classList.add('hidden'); document.getElementById('main-app').style.display=''">🏠 Dashboard</button>
+    </div>
+  </div>
+
+  <!-- CALENDAR EVENT MODAL OVERLAY -->
+  <div id="calendar-event-modal" class="modal-overlay hidden">
+    <div class="modal-card calendar-modal">
+      <div class="modal-header">
+        <h3 id="cal-modal-date-title">Events for Date</h3>
+        <button type="button" id="cal-modal-close-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Add Event Form -->
+        <form id="cal-event-form" class="cal-event-form" style="display: flex; flex-direction: column; gap: 16px; background: rgba(255,255,255,0.02); padding: 18px; border-radius: 16px; border: 1px solid var(--glass-border); margin-bottom: 20px;">
+          <div style="display: flex; gap: 12px; width: 100%; align-items: flex-start;">
+            <div class="input-group" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+              <label for="cal-event-time" style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">⏰ Select Time</label>
+              <input type="time" id="cal-event-time" required style="padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 10px; color: var(--text-primary); outline: none; font-size: 14px; transition: border-color 0.2s, box-shadow 0.2s; height: 48px;">
+            </div>
+            
+            <div class="input-group" style="flex: 1.2; display: flex; flex-direction: column; gap: 6px;">
+              <label for="cal-event-priority" style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">⚠️ Priority</label>
+              <select id="cal-event-priority" style="padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 10px; color: var(--text-primary); outline: none; font-size: 14px; transition: border-color 0.2s, box-shadow 0.2s; height: 48px; cursor: pointer; font-family: inherit;">
+                <option value="normal" selected>Normal</option>
+                <option value="important">Important</option>
+                <option value="emergency">Emergency</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="input-group" style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+            <label for="cal-event-desc" style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">📝 Event Details</label>
+            <textarea id="cal-event-desc" required placeholder="e.g. Sync with team members" style="padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 10px; color: var(--text-primary); outline: none; font-size: 14px; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; height: 56px; min-height: 48px; max-height: 120px; resize: vertical; font-family: inherit; line-height: 1.4;"></textarea>
+          </div>
+          
+          <div style="display: flex; gap: 12px; width: 100%;">
+            <button type="submit" class="primary-btn" style="padding: 12px; height: auto; border-radius: 10px; font-size: 14px; font-weight: 700; flex: 1; transition: all var(--transition-fast);">Add Schedule Event</button>
+            <button type="button" id="cal-cancel-edit-btn" class="primary-btn hidden" style="padding: 12px; height: auto; border-radius: 10px; font-size: 14px; font-weight: 700; background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--glass-border); transition: all var(--transition-fast); max-width: 100px;">Cancel</button>
+          </div>
+        </form>
+
+        <!-- List of Events for the selected day -->
+        <div class="cal-events-list" id="cal-events-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px; max-height: 280px; overflow-y: auto;">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="newtab.js"></script>
+</body>
+</html>

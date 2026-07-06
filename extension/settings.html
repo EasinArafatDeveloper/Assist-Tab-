@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AssistTab - Dashboard Settings</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS files -->
+  <link rel="stylesheet" href="newtab.css">
+  <link rel="stylesheet" href="focus_mode_styles_temp.css">
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings-page-wrapper">
+    <!-- 1. LEFT SIDEBAR -->
+    <aside class="settings-sidebar glass">
+      <div class="sidebar-brand">
+        <h2 class="brand-title">AssistTab</h2>
+        <p class="brand-subtitle">Configuration Center</p>
+      </div>
+
+      <nav class="settings-nav">
+        <button type="button" class="nav-tab-btn active" data-tab="general">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-text">General Settings</span>
+        </button>
+        <button type="button" class="nav-tab-btn" data-tab="ai">
+          <span class="tab-icon">✨</span>
+          <span class="tab-text">AI Assistant</span>
+        </button>
+        <button type="button" class="nav-tab-btn" data-tab="gmail">
+          <span class="tab-icon">✉️</span>
+          <span class="tab-text">Gmail Alerts</span>
+        </button>
+        <button type="button" class="nav-tab-btn" data-tab="focus">
+          <span class="tab-icon">🎯</span>
+          <span class="tab-text">Focus Blocker</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="newtab.html" class="back-dashboard-btn">
+          <span class="btn-arrow">←</span> Back to Dashboard
+        </a>
+      </div>
+    </aside>
+
+    <!-- 2. RIGHT CONTENT PANE -->
+    <main class="settings-main-content">
+      <!-- ══ PANEL: GENERAL ══ -->
+      <section id="panel-general" class="settings-panel active glass">
+        <div class="panel-header">
+          <h2>General Settings</h2>
+          <p>Configure themes and server configurations for your dashboard.</p>
+        </div>
+        <div class="panel-body">
+          <div class="input-group">
+            <label for="settings-theme">Dashboard Theme</label>
+            <select id="settings-theme" class="premium-select">
+              <option value="dark">Dark Theme (Premium Neon)</option>
+              <option value="light">Light Theme (Sleek Clean)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="settings-backend-url">Backend Server URL</label>
+            <input type="url" id="settings-backend-url" class="premium-input" placeholder="e.g. http://localhost:3000">
+            <small class="helper-text">This URL is used to sync your calendars, routines, and mail configurations.</small>
+          </div>
+          <div class="danger-zone">
+            <h3>Danger Zone</h3>
+            <p>Once you log out, you will need to sign in again to access your dashboard routines and calendars.</p>
+            <button type="button" id="logout-btn" class="danger-btn">Log Out Account</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PANEL: AI ASSISTANT ══ -->
+      <section id="panel-ai" class="settings-panel glass">
+        <div class="panel-header">
+          <h2>AI Assistant Configuration</h2>
+          <p>Choose your preferred AI Model Provider and set up the corresponding API keys.</p>
+        </div>
+        <div class="panel-body">
+          <div class="input-group">
+            <label for="settings-ai-provider">AI Model Provider</label>
+            <select id="settings-ai-provider" class="premium-select">
+              <option value="deepseek">DeepSeek AI (Text Only)</option>
+              <option value="gemini">Google Gemini (Supports Image/Files)</option>
+              <option value="openai">OpenAI GPT (Supports Image/Files)</option>
+              <option value="anthropic">Anthropic Claude (Supports Image/Files)</option>
+            </select>
+          </div>
+
+          <!-- Dynamic Key Inputs -->
+          <div class="api-keys-container">
+            <div id="provider-key-deepseek" class="provider-key-input">
+              <div class="input-group">
+                <label for="settings-deepseek-key">DeepSeek API Key</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="settings-deepseek-key" class="premium-input" placeholder="sk-...">
+                  <button type="button" class="toggle-password-btn" title="Toggle Visibility">👁️</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="provider-key-gemini" class="provider-key-input hidden">
+              <div class="input-group">
+                <label for="settings-gemini-key">Gemini API Key</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="settings-gemini-key" class="premium-input" placeholder="AIzaSy...">
+                  <button type="button" class="toggle-password-btn" title="Toggle Visibility">👁️</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="provider-key-openai" class="provider-key-input hidden">
+              <div class="input-group">
+                <label for="settings-openai-key">OpenAI API Key</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="settings-openai-key" class="premium-input" placeholder="sk-proj-...">
+                  <button type="button" class="toggle-password-btn" title="Toggle Visibility">👁️</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="provider-key-anthropic" class="provider-key-input hidden">
+              <div class="input-group">
+                <label for="settings-anthropic-key">Anthropic Claude API Key</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="settings-anthropic-key" class="premium-input" placeholder="sk-ant-...">
+                  <button type="button" class="toggle-password-btn" title="Toggle Visibility">👁️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PANEL: GMAIL NOTIFICATIONS ══ -->
+      <section id="panel-gmail" class="settings-panel glass">
+        <div class="panel-header">
+          <div class="title-with-badge">
+            <h2>Gmail Notification Settings</h2>
+            <span id="gmail-status-badge" class="gmail-status-badge status-disconnected">Disconnected</span>
+          </div>
+          <p>Get real-time voice alerts and dashboard indicators for critical new emails.</p>
+        </div>
+        <div class="panel-body">
+          <div class="input-group">
+            <label for="settings-gmail-address">Gmail Address</label>
+            <input type="email" id="settings-gmail-address" class="premium-input" placeholder="yourname@gmail.com" autocomplete="off">
+          </div>
+          <div class="input-group">
+            <label for="settings-gmail-password">Gmail App Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="settings-gmail-password" class="premium-input" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off">
+              <button type="button" class="toggle-password-btn" title="Toggle Visibility">👁️</button>
+            </div>
+            <small class="helper-text">
+              Do NOT use your normal email password. You must generate a 16-character <strong>App Password</strong> in your Google Account security settings.
+            </small>
+          </div>
+          <div class="gmail-actions">
+            <button type="button" id="disconnect-gmail-btn" class="danger-btn hidden">Disconnect Gmail Integration</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PANEL: FOCUS BLOCKER ══ -->
+      <section id="panel-focus" class="settings-panel glass">
+        <div class="panel-header">
+          <div class="title-with-badge">
+            <h2>🎯 Focus Mode — Website Blocker</h2>
+            <span id="focus-mode-status-badge" class="focus-status-badge inactive">OFF</span>
+          </div>
+          <p>Schedule sessions to auto-lock distracting domains. Sites stay locked until the window period ends.</p>
+        </div>
+        <div class="panel-body scrollable-panel-body">
+          <!-- Add New Focus Session Form -->
+          <div class="focus-add-form">
+            <h3 class="form-section-title">🔒 Create Focus Session</h3>
+
+            <!-- Session Name -->
+            <div class="focus-field">
+              <label for="focus-session-name">Session Name</label>
+              <input type="text" id="focus-session-name" class="premium-input" placeholder="e.g. Study Session">
+            </div>
+
+            <!-- Domain Input -->
+            <div class="focus-field">
+              <label>Sites to Block</label>
+              <div class="focus-domain-input-row">
+                <input type="text" id="focus-domain-input" class="premium-input" placeholder="e.g. facebook.com" autocomplete="off">
+                <button type="button" id="focus-add-domain-btn" class="focus-add-btn">+ Add Site</button>
+              </div>
+              <div id="focus-domain-tags" class="focus-domain-tags"></div>
+            </div>
+
+            <!-- Time Range -->
+            <div class="focus-field">
+              <label>Active Time Window</label>
+              <div class="focus-time-row">
+                <div class="time-input-wrap">
+                  <span class="time-label">Start Time</span>
+                  <input type="time" id="focus-start-time" class="premium-input" value="09:00">
+                </div>
+                <div class="focus-time-arrow">➔</div>
+                <div class="time-input-wrap">
+                  <span class="time-label">End Time</span>
+                  <input type="time" id="focus-end-time" class="premium-input" value="17:00">
+                </div>
+              </div>
+            </div>
+
+            <!-- Day Selector -->
+            <div class="focus-field">
+              <label>Active Days</label>
+              <div class="focus-day-chips">
+                <label class="day-chip"><input type="checkbox" value="mon" checked><span>Mon</span></label>
+                <label class="day-chip"><input type="checkbox" value="tue" checked><span>Tue</span></label>
+                <label class="day-chip"><input type="checkbox" value="wed" checked><span>Wed</span></label>
+                <label class="day-chip"><input type="checkbox" value="thu" checked><span>Thu</span></label>
+                <label class="day-chip"><input type="checkbox" value="fri" checked><span>Fri</span></label>
+                <label class="day-chip"><input type="checkbox" value="sat"><span>Sat</span></label>
+                <label class="day-chip"><input type="checkbox" value="sun"><span>Sun</span></label>
+              </div>
+            </div>
+
+            <button type="button" id="focus-save-session-btn" class="focus-save-btn">
+              🔒 Save Focus Session
+            </button>
+          </div>
+
+          <!-- Saved Sessions List -->
+          <div class="saved-sessions-section">
+            <h3 class="form-section-title">Saved Focus Sessions</h3>
+            <div class="focus-sessions-list" id="focus-sessions-list">
+              <div class="loading-placeholder" style="font-size: 12px; padding: 8px 0;">Loading focus sessions...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- STICKY ACTION BAR -->
+  <div class="settings-actions-footer glass">
+    <div class="action-footer-container">
+      <span class="unsaved-warning hidden">⚠️ You have unsaved changes.</span>
+      <button type="button" id="save-settings-btn" class="primary-btn save-configuration-btn">Save Configuration</button>
+    </div>
+  </div>
+
+  <!-- Script files -->
+  <script src="settings.js"></script>
+</body>
+</html>

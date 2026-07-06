@@ -1,0 +1,26 @@
+# Dependencies
+next-app/node_modules/
+node_modules/
+
+# Next.js build
+next-app/.next/
+next-app/out/
+next-app/build/
+
+# IDE/System
+.idea/
+.vscode/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files
+next-app/.env*
+.env*
+
+# TypeScript
+next-app/*.tsbuildinfo
+next-app/next-env.d.ts
