@@ -90,6 +90,13 @@ body {
   position: relative;
   /* Smooth theme transition */
   transition: background 0.45s ease, color 0.3s ease;
+  /* Hide scrollbar visually while keeping scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 body::before {
